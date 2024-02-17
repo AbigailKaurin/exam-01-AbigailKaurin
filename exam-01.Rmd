@@ -241,14 +241,40 @@ flights %>%
 
 6.  **Question 6 (15 points)** - Find the flight with the longest air time.
 
+***The code I was inspired by came from https://www2.stat.duke.edu/courses/Spring18/Sta199/exam/midterm-01-post.html. For this code, I selected air time, origin, destination, and tailnum for flights and arranged them by air time. Then to find the number of seats on the flight with the longest air time, I piped planes by tailnum since it is the same data in flights, and scrolled through the rows until I found that row 878 had the same plane tailnum as the one in the flights data, which showed that the number of seats was 292.***
+
+```{r flight-air-time}
+
+flights %>%
+  select(air_time, origin, dest, tailnum) %>%
+  count(air_time, origin, dest, tailnum) %>%
+  arrange(desc(air_time))
+
+planes %>%
+  select(tailnum, seats) %>%
+  arrange(desc(tailnum))%>%
+  slice(878)
+  
+
+
+```
+
     a\.
     How long is this flight?
+    
+  ***This flight is 695 minutes long***
 
     b\.
     What city did it fly to?
+    
+***The destination for this flight is HNL (Hawaii)***
 
     c\.
     How many seats does the plane that flew this flight have?
+    
+***This plane has 292 seats***
+
+
 
 7.  **Question 7 (15 pts)** - The `airports` data frame contains information on a large number of primarily American airports.
     These data include location information for these airports in the form of latitude and longitude coordinates.
@@ -258,6 +284,8 @@ flights %>%
     *Hint:* You will first need to limit your analysis to the Contiguous United States.
     [This Wikipedia article](https://en.wikipedia.org/wiki/List_of_extreme_points_of_the_United_States) can help, but you're welcomed to use other resources as well.
     Make sure to cite whatever resource you use.
+
+
 
 8.  **Question 8 (15 pts)** - Recreate the plot included below using the `flights` data.
     Once you have created the visualization, in no more than one paragraph, describe what you think the point of this visualization might be.
