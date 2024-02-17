@@ -181,14 +181,63 @@ flights %>%
 
 4.  **Question 4 (10 points)** - What was the mean temperature at the origin airport on the day with the highest departure delay?
     Your answer should include the name of origin airport, the date with the highest departure delay, and the mean temperature on that day.
+    
+***The mean temperature at the origin airport on the day with the hightest departure delay is 42.6575. The origin airport this took place in is JFK, on the first month, day 9.***
+
+***The code I used I copied directly from https://www2.stat.duke.edu/courses/Spring18/Sta199/exam/midterm-01-post.html and I arranged flights in descending order according to the departure delay, month, day, and origin. Then I filtered the weather data for the exact day shown and airport origin where the mean temp was of the hightest departure delay.***
+
+```{r flight-origin}
+
+flights %>%
+  arrange(desc(dep_delay)) %>%
+  slice(1) %>%
+  select(dep_delay, month, day, origin)
+```
+
+
+```{r mean-temp}
+weather %>%
+  filter(month == 1, day == 9, origin == "JFK") %>%
+  summarize(mean_temp = mean(temp))
+
+```
 
 5.  **Question 5 (15 points)** - Consider breaking the day into four time intervals: 12:01am-6am, 6:01am-12pm, 12:01pm-6pm, 6:01pm-12am.
 
     a\.
     Calculate the proportion of flights that are delayed at departure at each of these time intervals.
 
+***The proportion of flights that are delayed at departure at the first interval is 21%, the second interval is 26%, the third interval is 46%, and the fourth interval is 52%.***
+
+***The code I used for this question: https://www2.stat.duke.edu/courses/Spring18/Sta199/exam/midterm-01-post.html***
+
+***To answer this question, A code chunk was made to determine the time intervals of departure time, and then flights were filtered to make a proportion of flights delayed, the number of flights delayed, and the time interval when they were delayed.***
+
+```{r delayed-time}
+
+flights <- flights %>%
+  mutate(time_of_day = case_when(
+    sched_dep_time >= 001  & sched_dep_time <= 600  ~ "12:01am-6am",
+    sched_dep_time >= 601  & sched_dep_time <= 1200 ~ "6:01am-12pm",
+    sched_dep_time >= 1201 & sched_dep_time <= 1800 ~ "12:01pm-6pm",
+    sched_dep_time >= 1801                          ~ "6:01pm-12am"
+  ))
+
+flights %>%
+  filter(!is.na(dep_delay)) %>%
+  mutate(dep_delayed = ifelse(dep_delay > 0, "delayed", "ontime")) %>%
+  count(time_of_day, dep_delayed) %>%
+  group_by(time_of_day) %>%
+  mutate(prop_delayed = n / sum(n)) %>%
+  filter(dep_delayed == "delayed") %>%
+  arrange(prop_delayed)
+
+
+```
     b\.
     Comment on how the likelihood of being delayed change throughout the day?
+    
+***The liklihood of being delayed increases by 5% from the first time interval to the second time interval, then increases by 20% from the second to the third, and finally 5% from the third interval to the fourth.***
 
 6.  **Question 6 (15 points)** - Find the flight with the longest air time.
 
