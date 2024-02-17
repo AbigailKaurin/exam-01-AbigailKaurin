@@ -97,13 +97,19 @@ The main data is in the `flights` data frame, but there are additional data sets
 ## Questions
 
 1.  **Question 1 (10 points)** - What are the ten most common destinations for flights from NYC airports in 2013?
-    Make a table that lists these in descending order of frequency and shows the number of fligts heading to each airport.
+    Make a table that lists these in descending order of frequency and shows the number of flights heading to each airport.
     
-***The ten most common flight destinations from NYC airports in 2013 are:***
+***The ten most common flight destinations for flights from NYC airports in 2013 are: Orlando, Atlanta, LosAngeles, Boston, Orlando, Charlotte, San Francisco, Fort-Lauderdale Hollywood,Miami, and Ronald Reagan Washington National Airport (Virginia).***
+
+***To get this answer, I used the flights dataset in the ncyflights13 package and piped it to count in descending order for flight destinations. I also loaded tidyverse and ncyflights13 into the code chunk so that "%>%" would run properly, because before the Render would show "%>%" as not found. The source I used to help code this question- https://rpubs.com/mariadermit/exam-01***
 
 ```{r 10-common-flights}
+library(tidyverse)
+library(nycflights13)
 
- 
+flights %>%
+  count(dest) %>%
+  arrange(desc(n))
 
 ```
 
