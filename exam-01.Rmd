@@ -285,14 +285,49 @@ planes %>%
     [This Wikipedia article](https://en.wikipedia.org/wiki/List_of_extreme_points_of_the_United_States) can help, but you're welcomed to use other resources as well.
     Make sure to cite whatever resource you use.
 
+***https://rpubs.com/soobba/841947 and https://stackoverflow.com/questions/7056836/how-to-fix-the-aspect-ratio-in-ggplot and https://rpubs.com/mariadermit/exam-01 are my references***
 
+***The distributions of Airports in the Contiguous US shows that there are fewer airports out west than on the east/coastal areas.***
+
+```{r longitute-airports-US}
+
+airports %>%
+  select(origin = faa, origin_lat = lat, origin_lon = lon, dest_lat = lat, dest_lon = lon, tzone) %>%
+  filter(!tzone %in% c("Pacific/Honolulu","America/Anchorage")) %>%
+  ggplot(aes( x = origin_lon, xend = dest_lon,
+        y = origin_lat, yend = dest_lat)) +
+  geom_point() +
+  coord_fixed(ratio = 4)
+  
+```
 
 8.  **Question 8 (15 pts)** - Recreate the plot included below using the `flights` data.
     Once you have created the visualization, in no more than one paragraph, describe what you think the point of this visualization might be.
     *Hint:* The visualization uses the variable `arrival`, which is not included in the `flights` data frame.
     You will have to create `arrival` yourself, it is a categorical variable that is equal to `"ontime"` when `arr_delay <= 0` and `"delayed"` when `arr_delay > 0`.
+    
+***my source: https://www2.stat.duke.edu/courses/Spring18/Sta199/exam/midterm-01-post.html***
+
+***My explanation for what the visualization means is that the grid displays the comparison of flights delayed in EWR, JFK, and LGA, to the flights in those same airports that did not get delayed. The y shows the length of time of the delay, and x shows arrival for delayed and on time. The destination from these airports is represented by color.***
+    
+```{r flights-visualization}
+
+flights %>% 
+  filter(month == 12, dest %in% c("PHL", "RDU")) %>% 
+  mutate(arrival = ifelse(arr_delay > 0, "delayed", "ontime")) %>%
+  filter(!is.na(arrival)) %>%
+  ggplot(aes(x = arrival, y = dep_delay, color = dest)) + 
+    geom_boxplot() + 
+    facet_grid(dest ~ origin)
+
+
+
+```
 
 ![](img/plot-to-recreate.png)
+
+
+
 
 **Extra Credit (5 pts)** - Create a visualization that effectively shows if there is a relationship between the average daily departure delay and the average daily temperature for all three New York city airports.
 Your answer must be given in a single pipe.
